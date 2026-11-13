@@ -11,10 +11,10 @@ The first public build of Sill Desktop, an unofficial desktop client for [Sill](
 
 Linux, Intel Macs and Windows on ARM are coming.
 
-Neither build is signed with a paid certificate, so the system warns before the first launch:
+Neither build is signed with a paid certificate yet, so the system asks you to confirm the first launch. The steps for both systems are in the [README](https://github.com/aminehmida/sill-desktop#installing). In short:
 
-- **Mac:** unzip, move *Sill Desktop* to Applications, then right-click it and choose **Open** (or allow it in System Settings › Privacy & Security).
-- **Windows:** unzip the folder anywhere and run *Sill Desktop.exe*. On the SmartScreen notice choose **More info › Run anyway**.
+- **Mac:** unzip, move *Sill Desktop* to Applications, try to open it, then allow it in **System Settings › Privacy & Security › Open Anyway** (or run `xattr -dr com.apple.quarantine "/Applications/Sill Desktop.app"`).
+- **Windows:** extract the whole folder, run *Sill Desktop.exe*, and on the SmartScreen notice choose **More info › Run anyway**.
 
 ## What is there
 

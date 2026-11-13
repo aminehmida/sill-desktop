@@ -15,10 +15,33 @@ The Mac runs the free **Sill for Mac** app (0.6.1 or later for everything here).
 | Linux | Coming: builds and decodes, not yet released |
 | Intel Macs, Windows on ARM | Coming |
 
-Get a build from [Releases](../../releases). Neither is signed with a paid certificate:
+## Installing
 
-- **Mac:** unzip, move *Sill Desktop* to Applications, right-click it and choose **Open**.
-- **Windows:** unzip the folder and run *Sill Desktop.exe*; on the SmartScreen notice choose **More info › Run anyway**.
+Download the file for your system from [Releases](../../releases/latest). The builds are not signed with a paid developer certificate yet, so each system asks you to confirm the first launch.
+
+### Mac (Apple silicon, macOS 12 or later)
+
+1. Download `Sill-Desktop-…-macos-arm64.zip` and double-click it to unzip.
+2. Drag **Sill Desktop** into your **Applications** folder.
+3. Open it once. macOS refuses, saying it cannot verify the app (“Apple could not verify…” or “…is damaged and can’t be opened”). Click **Done**, not Move to Trash.
+4. Allow it, one of two ways:
+   - **In System Settings:** open **System Settings › Privacy & Security**, scroll down to the line about *Sill Desktop* being blocked, click **Open Anyway**, and confirm with your password or Touch ID. On macOS 14 and earlier you can instead right-click the app and choose **Open**, then **Open** again.
+   - **In Terminal**, which always works:
+     ```sh
+     xattr -dr com.apple.quarantine "/Applications/Sill Desktop.app"
+     ```
+5. Open **Sill Desktop** again. This is only needed once per download.
+6. When macOS asks to let Sill Desktop find devices on your local network, choose **Allow**: without it, Macs on your Wi‑Fi are not listed.
+
+### Windows (10 or 11, 64-bit Intel or AMD)
+
+1. Download `Sill-Desktop-…-windows-x64.zip`.
+2. Right-click the zip and choose **Extract All…**, and put the folder where you want to keep it (for example `Documents`). Keep the files together: the `.dll` files next to the app are its video and sound decoders.
+3. Open the folder and double-click **Sill Desktop.exe**.
+4. Windows shows “Windows protected your PC”. Click **More info**, then **Run anyway**.
+5. If Windows Firewall asks, allow access on **Private networks**, so Macs on your network are listed.
+
+There is no installer yet. To make it easy to find, right-click **Sill Desktop.exe** and choose **Pin to Start** or **Send to › Desktop (create shortcut)**. To remove it, delete the folder.
 
 ## Using it
 
