@@ -17,9 +17,9 @@ trap 'kill $host 2>/dev/null || true' EXIT
 for _ in $(seq 50); do grep -q '^ADDRESS=' "$out/host.log" && break; sleep 0.1; done
 grep -q '^ADDRESS=' "$out/host.log" || { echo "the test host did not start"; cat "$out/host.log"; exit 1; }
 
-script="pair:127.0.0.1:$port,$code;wait:streaming;sleep:0.6;shot:$out/1-connected.png;select:desktop;wait:pictures,60;sleep:0.6;shot:$out/2-desktop.png;ui:apps;sleep:0.5;shot:$out/3-apps.png;ui:settings;sleep:0.5;shot:$out/4-settings.png;ui:none;select:first;sleep:0.9;press:4;press:25,m;text:hello;click:0.25,0.75;scroll:0.1;fps:120;paste:from the bench;sleep:0.7;shot:$out/5-window.png;ui:bar;sleep:0.5;shot:$out/6-window-bar.png;ui:none;disconnect;wait:idle;sleep:0.3;shot:$out/7-macs.png;ui:add;sleep:0.3;shot:$out/8-add.png;exit"
+script="pair:127.0.0.1:$port,$code;wait:streaming;sleep:0.6;shot:$out/1-connected.png;select:desktop;wait:pictures,30;sleep:0.6;shot:$out/2-desktop.png;ui:apps;sleep:0.5;shot:$out/3-apps.png;ui:settings;sleep:0.5;shot:$out/4-settings.png;ui:none;select:first;sleep:0.9;press:4;press:25,m;text:hello;click:0.25,0.75;scroll:0.1;fps:120;paste:from the bench;sleep:0.7;shot:$out/5-window.png;ui:bar;sleep:0.5;shot:$out/6-window-bar.png;ui:none;disconnect;wait:idle;sleep:0.3;shot:$out/7-macs.png;ui:add;sleep:0.3;shot:$out/8-add.png;exit"
 status=0
-"$bin/sill" --config-dir "$out/device" --allow-loopback --no-discovery --null-sound --size 1180x760 --timeout 40 \
+"$bin/sill" --config-dir "$out/device" --allow-loopback --no-discovery --null-sound --size 1180x760 --timeout 150 \
   --auto "$script" "$@" >"$out/app.log" 2>&1 || status=$?
 sleep 0.3
 kill $host 2>/dev/null || true
