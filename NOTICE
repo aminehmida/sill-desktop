@@ -1,0 +1,21 @@
+Sill Desktop
+An unofficial desktop client for Sill (https://getsill.app).
+
+This project is a port of Sill's device side to Rust. Its protocol, its rules and much of its
+wording come from:
+
+  Sill, by Noah Saffer — https://github.com/Saffsanity/sill (Apache License 2.0)
+  Sill for Android, by Omar Marei — https://github.com/Saffsanity/sill/pull/89, kept at
+  https://github.com/aminehmida/sill-android (Apache License 2.0)
+
+It is not made, endorsed or supported by Sill's author. "Sill" is his app's name.
+
+Bundled with the released apps:
+
+  FFmpeg (https://ffmpeg.org), under the GNU Lesser General Public License 2.1 or later, as
+  separate shared libraries. The Windows build ships BtbN's LGPL build
+  (https://github.com/BtbN/FFmpeg-Builds); the Mac build is compiled from FFmpeg's source by
+  scripts/build-ffmpeg-macos.sh with only the HEVC and AAC decoders.
+
+  Inter (https://rsms.me/inter), under the SIL Open Font License 1.1
+  (crates/sill-app/assets/fonts/OFL.txt).
