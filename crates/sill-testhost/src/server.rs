@@ -137,11 +137,18 @@ async fn connection(inner: Arc<Inner>, tcp: TcpStream, peer: SocketAddr) {
         Ok(c) => c,
         Err(e) => return refused(alpn, None, format!("TLS setup: {e}")),
     };
-    let accepted = tokio::time::timeout_at(deadline, start.into_stream(config)).await;
+    // Fallible: a refused handshake hands the socket back, so it can be closed in order.
+    let accepted = tokio::time::timeout_at(deadline, start.into_stream(config).into_fallible()).await;
     let key = *seen.lock().unwrap();
     let tls = match accepted {
         Ok(Ok(tls)) => tls,
-        Ok(Err(e)) => {
+        Ok(Err((e, mut tcp))) => {
+            // The alert is written; end this side and read what the device still sends before
+            // closing. Dropping the socket with unread bytes resets the connection, and the
+            // reset can overtake the alert (it does on Windows): the device then sees a lost
+            // connection where it should see the refusal.
+            let _ = tcp.shutdown().await;
+            drain(&mut tcp, DRAIN).await;
             let reason = match (alpn, key) {
                 (None, _) => format!("no application protocol in common: {e}"),
                 (_, Some(Some(_))) => "unpaired: the door does not trust this key".to_string(),
