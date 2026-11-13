@@ -1,0 +1,30 @@
+[package]
+name = "sill-app"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Sill for the desktop: a Mac's windows on Windows, Linux and another Mac."
+
+[[bin]]
+name = "sill"
+path = "src/main.rs"
+
+[dependencies]
+sill-media = { path = "../sill-media" }
+egui = { version = "0.37", features = ["default_fonts"] }
+egui-winit = "0.37"
+egui-wgpu = { version = "0.37", features = ["winit"] }
+log = "0.4"
+env_logger = "0.11"
+pollster = "0.4"
+bytemuck = "1"
+winit = "0.30"
+wgpu = "30"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+sill-core = { path = "../sill-core" }
+arboard = { version = "3", default-features = false }
+dirs = "6"
+gethostname = "1"
+serde_json = { workspace = true }
+if-addrs = "0.13.4"
