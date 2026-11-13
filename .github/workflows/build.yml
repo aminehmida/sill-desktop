@@ -1,0 +1,100 @@
+name: Build
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: "0"
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: macos-latest, name: macos-arm64 }
+          - { os: windows-latest, name: windows-x64 }
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+
+      # macOS: a small LGPL FFmpeg built here (the HEVC and AAC decoders, VideoToolbox).
+      - name: Cache FFmpeg (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/cache@v4
+        with:
+          path: vendor/ffmpeg/macos
+          key: ffmpeg-macos-${{ runner.arch }}-${{ hashFiles('scripts/build-ffmpeg-macos.sh') }}
+      - name: FFmpeg (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          dir=$(scripts/build-ffmpeg-macos.sh)
+          echo "FFMPEG_DIR=$dir" >> "$GITHUB_ENV"
+          echo "RUSTFLAGS=-C link-arg=-Wl,-rpath,$dir/lib" >> "$GITHUB_ENV"
+      # Windows: BtbN's LGPL shared build.
+      - name: FFmpeg (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          dir=$(cygpath -w "$(scripts/fetch-ffmpeg.sh win64)")
+          echo "FFMPEG_DIR=$dir" >> "$GITHUB_ENV"
+          echo "$dir\\bin" >> "$GITHUB_PATH"
+          echo "LIBCLANG_PATH=C:\\Program Files\\LLVM\\bin" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: cargo build --release -p sill-app -p sill-testhost
+      - name: Test
+        run: cargo test --release --workspace
+      - name: Bench (the app against the synthetic host, in a real window)
+        run: BENCH_BIN=target/release scripts/bench.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bench-${{ matrix.name }}
+          path: bench/out
+          if-no-files-found: ignore
+
+      - name: Package
+        run: |
+          if [ "$RUNNER_OS" = macOS ]; then scripts/package-macos.sh; else scripts/package-windows.sh; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sill-desktop-${{ matrix.name }}
+          path: dist/*.zip
+          if-no-files-found: error
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sill-desktop-*
+          merge-multiple: true
+          path: dist
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          prerelease: true
+          body_path: packaging/release-notes.md
