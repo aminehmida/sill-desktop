@@ -17,7 +17,7 @@ done
 # Its libraries are in the bundle now, not where the build found them.
 install_name_tool -delete_rpath "$FFMPEG_DIR/lib" "$app/Contents/MacOS/sill" 2>/dev/null || true
 install_name_tool -add_rpath @executable_path/../Frameworks "$app/Contents/MacOS/sill"
-cp LICENSE NOTICE "$app/Contents/Resources/"
+cp LICENSE NOTICE packaging/macos/AppIcon.icns "$app/Contents/Resources/"
 codesign --force --deep --sign - "$app"
 (cd dist && ditto -c -k --keepParent "Sill Desktop.app" "Sill-Desktop-$version-macos-$arch.zip")
 ls -la dist/*.zip

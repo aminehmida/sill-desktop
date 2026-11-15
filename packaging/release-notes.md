@@ -1,4 +1,6 @@
-The first public build of Sill Desktop, an unofficial desktop client for [Sill](https://getsill.app). It shows a Mac's windows, or its whole desktop, on another computer, and lets you use them with that computer's keyboard and mouse. The Mac runs the free Sill for Mac app, 0.6.1 or later.
+**New in alpha 2:** the app has its own icon, on both systems.
+
+An early public build of Sill Desktop, an unofficial desktop client for [Sill](https://getsill.app). It shows a Mac's windows, or its whole desktop, on another computer, and lets you use them with that computer's keyboard and mouse. The Mac runs the free Sill for Mac app, 0.6.1 or later.
 
 **This is alpha software.** It streams and takes input in the author's own use, but most of it has only been tested against a synthetic host, on very few machines. Features are missing and it will have bugs. Please report what you find in Issues.
 

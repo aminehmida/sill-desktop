@@ -377,13 +377,23 @@ impl App {
     }
 }
 
+/// The window's icon on Windows and Linux (a Mac takes the bundle's).
+fn window_icon() -> Option<winit::window::Icon> {
+    let rgba = image::load_from_memory(include_bytes!("../assets/icon.png")).ok()?.into_rgba8();
+    let (w, h) = rgba.dimensions();
+    winit::window::Icon::from_rgba(rgba.into_raw(), w, h).ok()
+}
+
 impl ApplicationHandler<Wake> for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
         if self.gfx.is_some() {
             return;
         }
         let (w, h) = self.options.size;
-        let attrs = Window::default_attributes().with_title("Sill").with_inner_size(winit::dpi::LogicalSize::new(w, h));
+        let attrs = Window::default_attributes()
+            .with_title("Sill")
+            .with_window_icon(window_icon())
+            .with_inner_size(winit::dpi::LogicalSize::new(w, h));
         let window = Arc::new(event_loop.create_window(attrs).expect("a window"));
         if let Some(hz) = window.current_monitor().and_then(|m| m.refresh_rate_millihertz()) {
             let hz = hz as f64 / 1000.0;
